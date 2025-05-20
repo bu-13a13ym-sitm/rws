@@ -63,9 +63,9 @@ if __name__ == '__main__':
                 distance = voltage_to_distance(voltage)
             
                 if distance is None:
-                    display_text = f"out of distance\nvoltage: {voltage:.2f} V"
+                    display_text = "out of distance\nvoltage: {:.2f} V".format(voltage)
                 else:
-                    display_text = f"distance: {distance:.2f} cm\nvoltage: {voltage:.2f} V"
+                    display_text = "distance: {:.2f} cm\nvoltage: {:.2f} V".format(distance, voltage)
 
                 text_obj.set_text(display_text)
                 fig.canvas.draw()
