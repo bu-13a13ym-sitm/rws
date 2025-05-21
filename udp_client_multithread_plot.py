@@ -75,16 +75,22 @@ if __name__ == '__main__':
     th.setDaemon(True)
     th.start()
     plt.ion()
+    max_accel = 0
+    min_accel = 0
 
-    while True:
-        for _ in range(5*10):
-            sum = 0
+    try:
+        while True:
             if not th.data:
                 break
 
             if th.received:
                 sensor_data = th.get_data()
-                sum += sensor_data[7]
+                accel = sensor_data[0]
+                print(accel)
+                if max_accel < accel:
+                    max_accel = accel
+                elif min_accel > accel:
+                    min_accel = accel
                 #print(sensor_data[4])
                 #print(sensor_data[0])
 
@@ -93,6 +99,6 @@ if __name__ == '__main__':
                 #plot_sensor_data_bar(sensor_data)
 
             
-            time.sleep(0.1)
-        ave = sum / 50
-        print(ave)
+            time.sleep(0.05)
+    except KeyboardInterrupt:
+        print("highest accel value: ", max_accel, "\nshortest accel value: ", min_accel)

@@ -9,10 +9,7 @@ def voltage_to_distance(voltage):#need to be modified
         return None
     return 27.86 / (voltage - 0.42)
 
-def v_to_sdist(voltage):
-    pass
-
-def v_to_ldist(voltage):
+def v_to_dist(voltage):
     pass
 
 class ReceiveThread(threading.Thread):
@@ -66,8 +63,7 @@ if __name__ == '__main__':
     recorded_values = []
     curr_value = None
 
-    sth = 12
-    key_offset = 4
+    key_offset = 12
     key_width = 1.5
 
     try:
@@ -77,24 +73,16 @@ if __name__ == '__main__':
 
             if th.received:
                 sensor_data = th.get_data()
-                svoltage = sensor_data[3]
-                lvoltage = sensor_data[7]
+                voltage = sensor_data[7]
                 accel = sensor_data[0]
-                sdistance = v_to_sdist(svoltage)
-                ldistance = v_to_ldist(lvoltage)
-                distance = -1
+                distance = v_to_dist(voltage)
             
                 if not clk:
                     if  accel > clk_th:
                         clk = True
                         clk_start = frame
 
-                    else:
-                        if sdistance is not None and sdistance < sth:
-                            distance = sdistance
-                        elif ldistance is not None:
-                            distance = ldistance
-
+                    elif distance is not None:
                         distance -= key_offset
                         if distance >= 0 and distance < 11 * key_width:
                             curr_value = int(distance / key_width) + 1
