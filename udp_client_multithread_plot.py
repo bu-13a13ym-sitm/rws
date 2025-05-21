@@ -77,7 +77,7 @@ if __name__ == '__main__':
     plt.ion()
     max_accel = 0
     min_accel = 0
-    default_accel = -1.31
+    default_accel = -2.31
 
     try:
         while True:
