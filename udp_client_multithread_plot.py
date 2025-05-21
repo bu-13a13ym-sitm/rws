@@ -90,5 +90,5 @@ if __name__ == '__main__':
             #plot_sensor_data_bar(sensor_data)
 
         
-        time.sleep(0.05)
+        time.sleep(0.01)
         
