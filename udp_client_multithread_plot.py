@@ -75,35 +75,18 @@ if __name__ == '__main__':
     th.setDaemon(True)
     th.start()
     plt.ion()
-    max_accel = 0
-    min_accel = 0
-    #default_accel = -1.31
+    count = 0
 
-    try:
-        print("initializing accel sensor...")
-        sum_accel = 0
-        count = 0
-        for _ in range(5 * 10):
-            if th.received:
-                sum_accel -= th.get_data()[0]
-                count += 1
-            time.sleep(0.1)
-        default_accel = sum_accel / count
-        print("initializing completed.", sum_accel, default_accel)
-        time.sleep(3)
-
-        while True:
+    while True:
+        for _ in range(5*10):
+            sum = 0
             if not th.data:
                 break
 
             if th.received:
                 sensor_data = th.get_data()
-                accel = -sensor_data[0] - default_accel
-                print(accel)
-                if max_accel < accel:
-                    max_accel = accel
-                elif min_accel > accel:
-                    min_accel = accel
+                sum += sensor_data[7]
+                count += 1
                 #print(sensor_data[4])
                 #print(sensor_data[0])
 
@@ -113,5 +96,5 @@ if __name__ == '__main__':
 
             
             time.sleep(0.1)
-    except KeyboardInterrupt:
-        print("highest accel value: ", max_accel, "\nshortest accel value: ", min_accel)
+        ave = sum / count
+        print(ave)
