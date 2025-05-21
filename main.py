@@ -4,10 +4,7 @@ from socket import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-def voltage_to_distance(voltage):#need to be modified
-    if voltage <= 0.42:
-        return None
-    return 27.86 / (voltage - 0.42)
+DELETE = 'del'
 
 def v_to_dist(voltage):
     return -18.737 * voltage + 67.827
@@ -55,16 +52,18 @@ if __name__ == '__main__':
     text_obj = ax.text(0.5, 0.5, '', fontsize=30, ha='center', va='center')
     ax.axis('off')
 
+    fps = 1 / 0.05
     clk = False
+    clk_lock = False
     clk_start = 0
-    clk_accept = 5
+    clk_accept = 1 * fps
     frame = 0
-    clk_th = 0.5
+    clk_th = 1.0
     recorded_values = []
     curr_value = None
 
     key_offset = 12
-    key_width = 1.5
+    key_width = 1.0
 
     try:
         while True:
@@ -74,42 +73,51 @@ if __name__ == '__main__':
             if th.received:
                 sensor_data = th.get_data()
                 voltage = sensor_data[7]
-                accel = sensor_data[0]
-                distance = v_to_dist(voltage)
+                clk_voltage = sensor_data[0]
+                distance = v_to_dist(voltage) - key_offset
             
-                if not clk:
-                    if  accel > clk_th:
+                if clk_lock:
+                    if clk_voltage > clk_th:
+                        clk_lock = False
+
+                elif not clk:
+                    if  clk_voltage < clk_th:
                         clk = True
                         clk_start = frame
 
-                    elif distance is not None:
-                        distance -= key_offset
-                        if distance >= 0 and distance < 11 * key_width:
-                            curr_value = int(distance / key_width) + 1
-                            if curr_value > 9:
-                                curr_value = 0
-                        else:
-                            curr_value = None
+                    elif distance is not None and distance >= 0 and distance < 12 * key_width:
+                        curr_value = int(distance / key_width) + 1
+                        if curr_value == 10:
+                            curr_value = 0
+                        elif curr_value == 11:
+                            curr_value = DELETE
+                    else:
+                        curr_value = None
                 
-                if clk:
+                else:
                     if frame > clk_start + clk_accept:
                         clk = False
+                        clk_lock = True
                         clk_start = 0
+                        curr_value = None
                         
-                    elif accel < -clk_th:
+                    elif clk_voltage > clk_th:
                         clk = False
                         clk_start = 0
                         if curr_value is None:
                             break
+                        elif curr_value == DELETE:
+                            recorded_values = recorded_values[:len(recorded_values) - 1]
                         else:
                             recorded_values.append(curr_value)
                 
                 display_text = "{}".format(curr_value) if curr_value is not None else "invalid input"
+                display_text += "\n{}".format(recorded_values)
                 text_obj.set_text(display_text)
                 fig.canvas.draw()
                 fig.canvas.flush_events()
 
-                time.sleep(0.1)
+                time.sleep(1 / fps)
                 frame += 1
                 
     except KeyboardInterrupt:
