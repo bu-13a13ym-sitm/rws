@@ -74,29 +74,21 @@ if __name__ == '__main__':
     th = ReceiveThread()
     th.setDaemon(True)
     th.start()
-    plt.ion()
-    sum = 0
-    count = 0
 
     while True:
-        for _ in range(5*10):
-            if not th.data:
-                break
+        if not th.data:
+            break
 
-            if th.received:
-                sensor_data = th.get_data()
-                sum += sensor_data[7]
-                count += 1
-                #print(sensor_data[4])
-                #print(sensor_data[0])
+        if th.received:
+            sensor_data = th.get_data()
+            print(sensor_data[0])
+            #print(sensor_data[4])
+            #print(sensor_data[0])
 
-                # 両方は使用不可
-                #plot_sensor_data(sensor_data)
-                #plot_sensor_data_bar(sensor_data)
+            # 両方は使用不可
+            #plot_sensor_data(sensor_data)
+            #plot_sensor_data_bar(sensor_data)
 
-            
-            time.sleep(0.1)
-        ave = sum / count
-        count = 0
-        sum = 0
-        print("\n\t", ave, "\n")
+        
+        time.sleep(0.05)
+        
