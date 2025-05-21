@@ -86,7 +86,8 @@ if __name__ == '__main__':
                     curr_value = None
                 #recorded_values.append(curr_value)
                 
-                display_text = "{} {}".format(distance, curr_value) if curr_value is not None else "invalid input"
+                display_text = "{}".format(curr_value) if curr_value is not None else "invalid input"
+                display_text += ", {}".format(distance)
                 text_obj.set_text(display_text)
                 fig.canvas.draw()
                 fig.canvas.flush_events()
