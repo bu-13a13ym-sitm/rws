@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
             if th.received:
                 sensor_data = th.get_data()
-                sum += sensor_data[3]
+                sum += sensor_data[7]
                 #print(sensor_data[4])
                 #print(sensor_data[0])
 
