@@ -85,7 +85,7 @@ if __name__ == '__main__':
         count = 0
         for _ in range(5 * 10):
             if th.received:
-                sum_accel += th.get_data()[0]
+                sum_accel -= th.get_data()[0]
                 count += 1
             time.sleep(0.1)
         default_accel = sum_accel / count
