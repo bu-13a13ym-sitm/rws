@@ -87,6 +87,7 @@ if __name__ == '__main__':
             if th.received:
                 sum_accel += th.get_data()[0]
                 count += 1
+            time.sleep(0.1)
         default_accel = sum_accel / count
         print("initializing completed.")
         time.sleep(3)
