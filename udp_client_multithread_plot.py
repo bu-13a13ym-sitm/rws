@@ -85,7 +85,6 @@ if __name__ == '__main__':
 
             if th.received:
                 sensor_data = th.get_data()
-                print(sensor_data[7])
                 sum += sensor_data[7]
                 count += 1
                 #print(sensor_data[4])
