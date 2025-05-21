@@ -96,7 +96,7 @@ if __name__ == '__main__':
                 #print(sensor_data[0])
 
                 # 両方は使用不可
-                #plot_sensor_data(sensor_data)
+                plot_sensor_data(sensor_data)
                 #plot_sensor_data_bar(sensor_data)
 
             
