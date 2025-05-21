@@ -77,6 +77,7 @@ if __name__ == '__main__':
     plt.ion()
     max_accel = 0
     min_accel = 0
+    default_accel = -1.31
 
     try:
         while True:
@@ -85,7 +86,7 @@ if __name__ == '__main__':
 
             if th.received:
                 sensor_data = th.get_data()
-                accel = -sensor_data[0]
+                accel = -sensor_data[0] - default_accel
                 print(accel)
                 if max_accel < accel:
                     max_accel = accel
