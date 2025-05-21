@@ -10,7 +10,7 @@ def voltage_to_distance(voltage):#need to be modified
     return 27.86 / (voltage - 0.42)
 
 def v_to_dist(voltage):
-    return -936.84 * voltage + 67.827
+    return -18.737 * voltage + 67.827
 
 class ReceiveThread(threading.Thread):
     def __init__(self, PORT=12345):
