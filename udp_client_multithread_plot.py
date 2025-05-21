@@ -77,9 +77,17 @@ if __name__ == '__main__':
     plt.ion()
     max_accel = 0
     min_accel = 0
-    default_accel = -1.31
+    #default_accel = -1.31
 
     try:
+        print("initializing accel sensor...")
+        sum_accel = 0
+        for _ in range(5 * 10):
+            sum_accel += th.get_data()[0]
+        default_accel = sum_accel / 50
+        print("initializing completed.")
+        time.sleep(3)
+
         while True:
             if not th.data:
                 break
@@ -96,7 +104,7 @@ if __name__ == '__main__':
                 #print(sensor_data[0])
 
                 # 両方は使用不可
-                plot_sensor_data(sensor_data)
+                #plot_sensor_data(sensor_data)
                 #plot_sensor_data_bar(sensor_data)
 
             
