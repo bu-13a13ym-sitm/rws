@@ -1,58 +1,102 @@
+import threading
 import time
-import random
+from socket import *
+import numpy as np
 import matplotlib.pyplot as plt
 
-def voltage_to_distance(voltage):
+def voltage_to_distance(voltage):#need to be modified
     if voltage <= 0.42:
         return None
     return 27.86 / (voltage - 0.42)
 
-plt.ion()
-fig, ax = plt.subplots(figsize=(5, 3))
-text_obj = ax.text(0.5, 0.5, '', fontsize=30, ha='center', va='center')
-ax.axis('off')
+def v_to_dist(voltage):
+    return -936.84 * voltage + 67.827
 
-clk = False
-clk_start = 0
-clk_accept = 5
-frame = 0
-clk_th = 0.5
-strnum = ''
+class ReceiveThread(threading.Thread):
+    def __init__(self, PORT=12345):
+        threading.Thread.__init__(self)
+        self.data = 'hoge'
+        self.kill_flag = False
+        # line information
+        self.HOST = "127.0.0.1"
+        self.PORT = PORT
+        self.BUFSIZE = 1024
+        self.ADDR = (gethostbyname(self.HOST), self.PORT)
+        # bind
+        self.udpServSock = socket(AF_INET, SOCK_DGRAM)
+        self.udpServSock.bind(self.ADDR)
+        self.received = False
 
-try:
-    while True:
-        # ランダムなテストデータ生成
-        voltage = random.uniform(0.3, 3.0)         # 距離センサ電圧
-        accel = random.uniform(-1.0, 1.0)        # 加速度X軸
+    def get_data(self):
+        data_ary = []
+        for i in reversed(range(8)):
+            num = int(str(self.data[i*8:(i+1)*8]))
+            data_ary.append(num / 167.0 / 10000)
+        self.received = False
+        return data_ary
 
-        distance = voltage_to_distance(voltage)
-        input_value = 0
-        if distance is not None:
-            input_value = int(distance / 1.5)
+    def run(self):
+        while True:
+            try:
+                data, self.addr = self.udpServSock.recvfrom(self.BUFSIZE)
+                self.data = data.decode()
+                self.received = True
+            except:
+                pass
 
-        # トリガーロジック
-        if not clk and accel > clk_th:
-            clk = True
-            clk_start = frame
-        
-        if clk:
-            if frame > clk_start + clk_accept:
-                clk = False
-                clk_start = 0
+
+if __name__ == '__main__':
+    th = ReceiveThread()
+    th.setDaemon(True)
+    th.start()
+    
+    plt.ion()
+    fig, ax = plt.subplots()
+    text_obj = ax.text(0.5, 0.5, '', fontsize=30, ha='center', va='center')
+    ax.axis('off')
+
+    clk = False
+    clk_start = 0
+    clk_accept = 5
+    frame = 0
+    clk_th = 0.5
+    recorded_values = []
+    curr_value = None
+
+    key_offset = 12
+    key_width = 1.5
+
+    try:
+        while True:
+            if not th.data:
+                break
+
+            if th.received:
+                sensor_data = th.get_data()
+                voltage = sensor_data[7]
+                accel = sensor_data[0]
+                distance = v_to_dist(voltage)
+
+                distance -= key_offset
+                if distance >= 0 and distance < 11 * key_width:
+                    curr_value = int(distance / key_width) + 1
+                    if curr_value > 9:
+                        curr_value = 0
+                else:
+                    curr_value = None
+                #recorded_values.append(curr_value)
                 
-            elif accel < -clk_th:
-                strnum += "{}".format(input_value)
-                print("clicked! ", input_value)
-                clk = False
-                clk_start = 0
+                display_text = "{}".format(curr_value) if curr_value is not None else "invalid input"
+                text_obj.set_text(display_text)
+                fig.canvas.draw()
+                fig.canvas.flush_events()
 
-        display_text = "distance: {} cm\naccel: {:.2f}".format(input_value, accel)
-        text_obj.set_text(display_text)
-        fig.canvas.draw()
-        fig.canvas.flush_events()
-        time.sleep(0.1)
-        frame += 1
+                time.sleep(0.1)
+                frame += 1
+                
+    except KeyboardInterrupt:
+        pass
 
-except KeyboardInterrupt:
+    str_num = ''.join(map(str, recorded_values))
+    #print("recorded values: ", recorded_values, str_num)
     plt.close()
-    print("Recorded values:", strnum)
