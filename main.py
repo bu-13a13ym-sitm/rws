@@ -9,6 +9,12 @@ def voltage_to_distance(voltage):#need to be modified
         return None
     return 27.86 / (voltage - 0.42)
 
+def v_to_sdist(voltage):
+    pass
+
+def v_to_ldist(voltage):
+    pass
+
 class ReceiveThread(threading.Thread):
     def __init__(self, PORT=12345):
         threading.Thread.__init__(self)
@@ -58,7 +64,11 @@ if __name__ == '__main__':
     frame = 0
     clk_th = 0.5
     recorded_values = []
-    curr_value = 0
+    curr_value = None
+
+    sth = 12
+    key_offset = 4
+    key_width = 1.5
 
     try:
         while True:
@@ -67,17 +77,31 @@ if __name__ == '__main__':
 
             if th.received:
                 sensor_data = th.get_data()
-                voltage = sensor_data[4]
+                svoltage = sensor_data[3]
+                lvoltage = sensor_data[7]
                 accel = sensor_data[0]
-                distance = voltage_to_distance(voltage)
+                sdistance = v_to_sdist(svoltage)
+                ldistance = v_to_ldist(lvoltage)
+                distance = -1
             
                 if not clk:
                     if  accel > clk_th:
                         clk = True
                         clk_start = frame
 
-                    elif distance is not None:
-                        curr_value = int(distance / 1.5)
+                    else:
+                        if sdistance is not None and sdistance < sth:
+                            distance = sdistance
+                        elif ldistance is not None:
+                            distance = ldistance
+
+                        distance -= key_offset
+                        if distance >= 0 and distance < 11 * key_width:
+                            curr_value = int(distance / key_width) + 1
+                            if curr_value > 9:
+                                curr_value = 0
+                        else:
+                            curr_value = None
                 
                 if clk:
                     if frame > clk_start + clk_accept:
@@ -87,12 +111,12 @@ if __name__ == '__main__':
                     elif accel < -clk_th:
                         clk = False
                         clk_start = 0
-                        if (curr_value < 10):
-                            recorded_values.append(curr_value)
-                        else:
+                        if curr_value is None:
                             break
+                        else:
+                            recorded_values.append(curr_value)
                 
-                display_text = "{}".format(curr_value)
+                display_text = "{}".format(curr_value) if curr_value is not None else "invalid input"
                 text_obj.set_text(display_text)
                 fig.canvas.draw()
                 fig.canvas.flush_events()
