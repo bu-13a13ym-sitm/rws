@@ -75,11 +75,11 @@ if __name__ == '__main__':
     th.setDaemon(True)
     th.start()
     plt.ion()
+    sum = 0
     count = 0
 
     while True:
         for _ in range(5*10):
-            sum = 0
             if not th.data:
                 break
 
@@ -99,4 +99,5 @@ if __name__ == '__main__':
             time.sleep(0.1)
         ave = sum / count
         count = 0
+        sum = 0
         print("\n\t", ave, "\n")
