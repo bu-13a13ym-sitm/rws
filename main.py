@@ -57,7 +57,8 @@ if __name__ == '__main__':
     clk_accept = 5
     frame = 0
     clk_th = 0.5
-    strnum = ''
+    recorded_values = []
+    curr_value = 0
 
     try:
         while True:
@@ -69,14 +70,14 @@ if __name__ == '__main__':
                 voltage = sensor_data[4]
                 accel = sensor_data[0]
                 distance = voltage_to_distance(voltage)
-                input_value = 0
             
-                if distance is not None:
-                    input_value = int(distance / 1.5)
-                
-                if not clk and accel > clk_th:
-                    clk = True
-                    clk_start = frame
+                if not clk:
+                    if  accel > clk_th:
+                        clk = True
+                        clk_start = frame
+
+                    elif distance is not None:
+                        curr_value = int(distance / 1.5)
                 
                 if clk:
                     if frame > clk_start + clk_accept:
@@ -84,17 +85,24 @@ if __name__ == '__main__':
                         clk_start = 0
                         
                     elif accel < -clk_th:
-                        strnum += "{}".format(input_value)
                         clk = False
                         clk_start = 0
+                        if (curr_value < 10):
+                            recorded_values.append(curr_value)
+                        else:
+                            break
                 
-                display_text = "{}".format(input_value)
+                display_text = "{}".format(curr_value)
                 text_obj.set_text(display_text)
                 fig.canvas.draw()
                 fig.canvas.flush_events()
 
                 time.sleep(0.1)
                 frame += 1
+                
     except KeyboardInterrupt:
-        print("recorded values: ", strnum)
-        plt.close()
+        pass
+
+    str_num = ''.join(map(str, recorded_values))
+    print("recorded values: ", recorded_values, str_num)
+    plt.close()

@@ -92,6 +92,7 @@ if __name__ == '__main__':
                 #plot_sensor_data(sensor_data)
                 #plot_sensor_data_bar(sensor_data)
 
-            ave = sum / 50
-            print(ave)
+            
             time.sleep(0.1)
+        ave = sum / 50
+        print(ave)
