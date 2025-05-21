@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
             if th.received:
                 sensor_data = th.get_data()
-                accel = sensor_data[0]
+                accel = -sensor_data[0]
                 print(accel)
                 if max_accel < accel:
                     max_accel = accel
