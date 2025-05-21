@@ -89,7 +89,7 @@ if __name__ == '__main__':
                 count += 1
             time.sleep(0.1)
         default_accel = sum_accel / count
-        print("initializing completed.")
+        print("initializing completed.", sum_accel, default_accel)
         time.sleep(3)
 
         while True:
