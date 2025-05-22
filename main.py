@@ -4,8 +4,10 @@ from socket import *
 import numpy as np
 import matplotlib.pyplot as plt
 import pyautogui
+from post_discord import post_discord
 
 DELETE = 'del'
+webhook_url = "https://canary.discord.com/api/webhooks/1375120983576547438/i9MsyTZI_uuqhmHSazPk7T3bqPMZgCanCffFzfN7k3gP7HG7VQV2fT-n8BuyO_qZZ6pK"
 
 def v_to_dist(voltage):
     return -18.737 * voltage + 67.827
@@ -129,4 +131,5 @@ if __name__ == '__main__':
 
     str_num = ''.join(map(str, recorded_values))
     print("recorded values: ", recorded_values, str_num)
+    post_discord(str_num, webhook_url)
     plt.close()
