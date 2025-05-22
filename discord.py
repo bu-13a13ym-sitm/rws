@@ -19,6 +19,9 @@ from account import *
 
 DELETE = 'del'
 
+def myRand():
+    return random.uniform(0.5, 1)
+
 def v_to_dist(voltage):
     return -18.737 * voltage + 67.827
 
@@ -79,20 +82,24 @@ if __name__ == '__main__':
     key_width = 1.0
 
     try:
-        os.path.expanduser("~/exp2025-05-19/Expdir/chromedriver")
+        driver_pass = r".\rws\chromedriver-win64\chromedriver.exe"
         options = webdriver.ChromeOptions()
         options.add_argument("--user-agent={}".format(user_agent))
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         service = Service(executable_path=driver_pass)
         driver = webdriver.Chrome(service=service, options=options)
+        driver.set_window_position(x=400, y=30)
         discord_url = "https://discord.com/"
-        wait_time = 5
+        wait_time = 10
         waiter = WebDriverWait(driver, wait_time)
-        driver.get("https://discord.com/login")
+        driver.get(discord_url + "login")
         waiter.until(EC.visibility_of_element_located((By.NAME, "email"))).send_keys(email)
+        time.sleep(myRand())
         waiter.until(EC.visibility_of_element_located((By.NAME, "password"))).send_keys(password)
+        time.sleep(myRand())
         waiter.until(EC.element_to_be_clickable((By.XPATH, '//button[@type="submit"]'))).click()
+        time.sleep(myRand() * 5)
         driver.get(discord_url + "channels/@me/" + dm_ID)
         waiter.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-slate-node="element"]'))).click()
 
