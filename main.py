@@ -117,9 +117,16 @@ if __name__ == '__main__':
                             recorded_values.append(curr_value)
                             pyautogui.write(str(curr_value))
                 
-                display_text = "{}".format(curr_value) if curr_value is not None else "invalid input"
+                display_text = ""
+                if clk_lock:
+                    display_text += "locked\n"
+                display_text += "{}".format(curr_value) if curr_value is not None else "invalid input"
                 display_text += "\n{}".format(recorded_values)
                 text_obj.set_text(display_text)
+                if clk:
+                    text_obj.set_color('red')
+                else:
+                    text_obj.set_color('black')
                 fig.canvas.draw()
                 fig.canvas.flush_events()
 
