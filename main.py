@@ -86,7 +86,7 @@ if __name__ == '__main__':
                         clk = True
                         clk_start = frame
 
-                    elif distance is not None and distance >= 0 and distance < 12 * key_width:
+                    elif distance is not None and distance >= 0 and distance < 11 * key_width:
                         curr_value = int(distance / key_width) + 1
                         if curr_value == 10:
                             curr_value = 0
