@@ -81,7 +81,7 @@ if __name__ == '__main__':
     key_width = 1.0
 
     try:
-        driver_path = r".\rws\chromedriver-win64\chromedriver.exe"
+        driver_pass = os.path.expanduser("~/exp2025-05-19/Expdir/chromedriver")
         options = webdriver.ChromeOptions()
         options.add_argument("--user-agent={}".format(user_agent))
         options.add_argument("--no-sandbox")
