@@ -5,4 +5,4 @@ __pycache__/
 calcurateD.py
 account.py
 randomDiscordTest.py
-chromedriver-win64/*
+chromedriver-win64/
