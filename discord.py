@@ -81,12 +81,12 @@ if __name__ == '__main__':
     key_width = 1.0
 
     try:
-        driver_pass = r".\rws\chromedriver-win64\chromedriver.exe"
+        driver_path = r".\rws\chromedriver-win64\chromedriver.exe"
         options = webdriver.ChromeOptions()
         options.add_argument("--user-agent={}".format(user_agent))
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        driver = webdriver.Chrome(executable_pass=driver_pass, chrome_options=options)
+        driver = webdriver.Chrome(executable_path=driver_path, chrome_options=options)
         driver.set_window_position(x=400, y=30)
         discord_url = "https://discord.com/"
         wait_time = 10
