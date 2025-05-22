@@ -3,6 +3,7 @@ import time
 from socket import *
 import numpy as np
 import matplotlib.pyplot as plt
+import pyautogui
 
 DELETE = 'del'
 
@@ -105,11 +106,14 @@ if __name__ == '__main__':
                         clk = False
                         clk_start = 0
                         if curr_value is None:
+                            pyautogui.press('enter')
                             break
                         elif curr_value == DELETE:
                             recorded_values = recorded_values[:len(recorded_values) - 1]
+                            pyautogui.press('backspace')
                         else:
                             recorded_values.append(curr_value)
+                            pyautogui.write(str(curr_value))
                 
                 display_text = "{}".format(curr_value) if curr_value is not None else "invalid input"
                 display_text += "\n{}".format(recorded_values)
