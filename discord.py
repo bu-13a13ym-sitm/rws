@@ -11,7 +11,6 @@ from socket import *
 import matplotlib.pyplot as plt
 import pyautogui
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -87,8 +86,7 @@ if __name__ == '__main__':
         options.add_argument("--user-agent={}".format(user_agent))
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        service = Service(executable_path=driver_pass)
-        driver = webdriver.Chrome(service=service, options=options)
+        driver = webdriver.Chrome(executable_pass=driver_pass, chrome_options=options)
         driver.set_window_position(x=400, y=30)
         discord_url = "https://discord.com/"
         wait_time = 10
