@@ -1,3 +1,9 @@
+import sys
+import os
+
+account_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(account_dir)
+
 import threading
 import time
 import random
@@ -73,7 +79,7 @@ if __name__ == '__main__':
     key_width = 1.0
 
     try:
-        driver_pass = "/usr/bin/chromedriver"
+        driver_pass = "~/exp2025-05-19/Expdir/chromedriver"
         options = webdriver.ChromeOptions()
         options.add_argument("--user-agent={}".format(user_agent))
         options.add_argument("--no-sandbox")
