@@ -1,16 +1,31 @@
 import threading
 import time
 from socket import *
-import numpy as np
 import matplotlib.pyplot as plt
 import pyautogui
-from post_discord import post_discord
+import json
+from urllib.request import Request, urlopen
+from account import webhook_url
 
 DELETE = 'del'
-webhook_url = "https://canary.discord.com/api/webhooks/1375120983576547438/i9MsyTZI_uuqhmHSazPk7T3bqPMZgCanCffFzfN7k3gP7HG7VQV2fT-n8BuyO_qZZ6pK"
 
 def v_to_dist(voltage):
     return -18.737 * voltage + 67.827
+
+def post_discord(message: str, webhook_url: str):
+    headers = {
+        "Content-Type": "application/json",
+        "User-Agent": "DiscordBot (private use) Python-urllib/3.10",
+    }
+    data = {"content": message}
+    request = Request(
+        webhook_url,
+        data=json.dumps(data).encode(),
+        headers=headers,
+    )
+
+    with urlopen(request) as res:
+        assert res.getcode() == 204
 
 class ReceiveThread(threading.Thread):
     def __init__(self, PORT=12345):
